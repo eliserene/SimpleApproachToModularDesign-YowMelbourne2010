@@ -9,9 +9,11 @@ import org.junit.*;
 public class SellOneItemTest {
     public static class Sale {
         private Display display;
+        private Map<String, String> pricesByBarcode;
 
-        public Sale(Display display) {
+        public Sale(Display display, Map<String, String> pricesByBarcode) {
             this.display = display;
+            this.pricesByBarcode = pricesByBarcode;
         }
 
         public void onBarcode(String barcode) {
@@ -19,13 +21,6 @@ public class SellOneItemTest {
                 display.setText("Scanning error: empty barcode");
                 return;
             }
-
-            HashMap<String, String> pricesByBarcode = new HashMap<String, String>() {
-                {
-                    put("123", "$12.50");
-                    put("456", "$20.00");
-                }
-            };
 
             if (pricesByBarcode.containsKey(barcode))
                 display.setText(pricesByBarcode.get(barcode));
@@ -50,7 +45,12 @@ public class SellOneItemTest {
     @Test
     public void productFound() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display);
+        Sale sale = new Sale(display, new HashMap<String, String>() {
+            {
+                put("123", "$12.50");
+                put("456", "$20.00");
+            }
+        });
 
         sale.onBarcode("123");
 
@@ -60,7 +60,12 @@ public class SellOneItemTest {
     @Test
     public void anotherProductFound() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display);
+        Sale sale = new Sale(display, new HashMap<String, String>() {
+            {
+                put("123", "$12.50");
+                put("456", "$20.00");
+            }
+        });
 
         sale.onBarcode("456");
 
@@ -70,7 +75,12 @@ public class SellOneItemTest {
     @Test
     public void productNotFound() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display);
+        Sale sale = new Sale(display, new HashMap<String, String>() {
+            {
+                put("123", "$12.50");
+                put("456", "$20.00");
+            }
+        });
 
         sale.onBarcode("999");
 
@@ -80,7 +90,12 @@ public class SellOneItemTest {
     @Test
     public void emptyBarcode() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display);
+        Sale sale = new Sale(display, new HashMap<String, String>() {
+            {
+                put("123", "$12.50");
+                put("456", "$20.00");
+            }
+        });
 
         sale.onBarcode("");
 
