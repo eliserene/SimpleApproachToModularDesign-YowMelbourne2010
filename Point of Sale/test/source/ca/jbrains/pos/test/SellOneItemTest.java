@@ -15,8 +15,10 @@ public class SellOneItemTest {
         public void onBarcode(String barcode) {
             if ("123".equals(barcode))
                 display.setText("$12.50");
-            else
+            else if ("456".equals(barcode))
                 display.setText("$20.00");
+            else
+                display.setText("No product with barcode " + barcode);
         }
 
     }
@@ -51,5 +53,15 @@ public class SellOneItemTest {
         sale.onBarcode("456");
 
         assertEquals("$20.00", display.getText());
+    }
+
+    @Test
+    public void productNotFound() throws Exception {
+        Display display = new Display();
+        Sale sale = new Sale(display);
+
+        sale.onBarcode("999");
+
+        assertEquals("No product with barcode 999", display.getText());
     }
 }
