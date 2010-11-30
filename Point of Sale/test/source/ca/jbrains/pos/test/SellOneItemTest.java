@@ -18,14 +18,14 @@ public class SellOneItemTest {
 
         public void onBarcode(String barcode) {
             if ("".equals(barcode)) {
-                display.setText("Scanning error: empty barcode");
+                display.displayEmptyBarcodeMessage();
                 return;
             }
 
             if (pricesByBarcode.containsKey(barcode))
-                display.setText(pricesByBarcode.get(barcode));
+                display.displayPrice(pricesByBarcode.get(barcode));
             else
-                display.setText("No product with barcode " + barcode);
+                display.displayProductNotFoundMessage(barcode);
         }
 
     }
@@ -39,6 +39,18 @@ public class SellOneItemTest {
 
         public String getText() {
             return text;
+        }
+
+        public void displayEmptyBarcodeMessage() {
+            setText("Scanning error: empty barcode");
+        }
+
+        public void displayProductNotFoundMessage(String barcode) {
+            setText("No product with barcode " + barcode);
+        }
+
+        public void displayPrice(String price) {
+            setText(price);
         }
     }
 
@@ -62,12 +74,11 @@ public class SellOneItemTest {
         Display display = new Display();
         Sale sale = new Sale(display, new HashMap<String, String>() {
             {
-                put("123", "$12.50");
-                put("456", "$20.00");
+                put("123", "$20.00");
             }
         });
 
-        sale.onBarcode("456");
+        sale.onBarcode("123");
 
         assertEquals("$20.00", display.getText());
     }
