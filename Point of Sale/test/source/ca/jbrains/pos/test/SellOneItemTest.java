@@ -22,10 +22,18 @@ public class SellOneItemTest {
                 return;
             }
 
-            if (pricesByBarcode.containsKey(barcode))
-                display.displayPrice(pricesByBarcode.get(barcode));
+            if (hasBarcode(barcode))
+                display.displayPrice(findPriceByBarcode(barcode));
             else
                 display.displayProductNotFoundMessage(barcode);
+        }
+
+        private String findPriceByBarcode(String barcode) {
+            return pricesByBarcode.get(barcode);
+        }
+
+        private boolean hasBarcode(String barcode) {
+            return pricesByBarcode.containsKey(barcode);
         }
 
     }
