@@ -2,6 +2,8 @@ package ca.jbrains.pos.test;
 
 import static org.junit.Assert.*;
 
+import java.util.*;
+
 import org.junit.*;
 
 public class SellOneItemTest {
@@ -13,12 +15,20 @@ public class SellOneItemTest {
         }
 
         public void onBarcode(String barcode) {
-            if ("".equals(barcode))
+            if ("".equals(barcode)) {
                 display.setText("Scanning error: empty barcode");
-            else if ("123".equals(barcode))
-                display.setText("$12.50");
-            else if ("456".equals(barcode))
-                display.setText("$20.00");
+                return;
+            }
+
+            HashMap<String, String> pricesByBarcode = new HashMap<String, String>() {
+                {
+                    put("123", "$12.50");
+                    put("456", "$20.00");
+                }
+            };
+
+            if (pricesByBarcode.containsKey(barcode))
+                display.setText(pricesByBarcode.get(barcode));
             else
                 display.setText("No product with barcode " + barcode);
         }
