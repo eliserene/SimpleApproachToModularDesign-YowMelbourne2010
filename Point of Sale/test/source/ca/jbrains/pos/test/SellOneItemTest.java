@@ -7,13 +7,31 @@ import java.util.*;
 import org.junit.*;
 
 public class SellOneItemTest {
-    public static class Sale {
-        private Display display;
-        private Map<String, String> pricesByBarcode;
+    public static class Catalog {
 
-        public Sale(Display display, Map<String, String> pricesByBarcode) {
-            this.display = display;
+        private final Map<String, String> pricesByBarcode;
+
+        public Catalog(Map<String, String> pricesByBarcode) {
             this.pricesByBarcode = pricesByBarcode;
+        }
+
+        public String findPriceByBarcodeThenFormatIt(String barcode) {
+            return pricesByBarcode.get(barcode);
+        }
+
+        public boolean hasBarcode(String barcode) {
+            return pricesByBarcode.containsKey(barcode);
+        }
+
+    }
+
+    public static class Sale {
+        private final Display display;
+        private final Catalog catalog;
+
+        public Sale(Display display, Catalog catalog) {
+            this.display = display;
+            this.catalog = catalog;
         }
 
         public void onBarcode(String barcode) {
@@ -22,18 +40,10 @@ public class SellOneItemTest {
                 return;
             }
 
-            if (hasBarcode(barcode))
-                display.displayPrice(findPriceByBarcode(barcode));
+            if (catalog.hasBarcode(barcode))
+                display.displayPrice(catalog.findPriceByBarcodeThenFormatIt(barcode));
             else
                 display.displayProductNotFoundMessage(barcode);
-        }
-
-        private String findPriceByBarcode(String barcode) {
-            return pricesByBarcode.get(barcode);
-        }
-
-        private boolean hasBarcode(String barcode) {
-            return pricesByBarcode.containsKey(barcode);
         }
 
     }
@@ -65,12 +75,13 @@ public class SellOneItemTest {
     @Test
     public void productFound() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display, new HashMap<String, String>() {
-            {
-                put("123", "$12.50");
-                put("456", "$20.00");
-            }
-        });
+        Sale sale = new Sale(display, new Catalog(
+                new HashMap<String, String>() {
+                    {
+                        put("123", "$12.50");
+                        put("456", "$20.00");
+                    }
+                }));
 
         sale.onBarcode("123");
 
@@ -80,11 +91,12 @@ public class SellOneItemTest {
     @Test
     public void anotherProductFound() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display, new HashMap<String, String>() {
-            {
-                put("123", "$20.00");
-            }
-        });
+        Sale sale = new Sale(display, new Catalog(
+                new HashMap<String, String>() {
+                    {
+                        put("123", "$20.00");
+                    }
+                }));
 
         sale.onBarcode("123");
 
@@ -94,12 +106,13 @@ public class SellOneItemTest {
     @Test
     public void productNotFound() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display, new HashMap<String, String>() {
-            {
-                put("123", "$12.50");
-                put("456", "$20.00");
-            }
-        });
+        Sale sale = new Sale(display, new Catalog(
+                new HashMap<String, String>() {
+                    {
+                        put("123", "$12.50");
+                        put("456", "$20.00");
+                    }
+                }));
 
         sale.onBarcode("999");
 
@@ -109,12 +122,13 @@ public class SellOneItemTest {
     @Test
     public void emptyBarcode() throws Exception {
         Display display = new Display();
-        Sale sale = new Sale(display, new HashMap<String, String>() {
-            {
-                put("123", "$12.50");
-                put("456", "$20.00");
-            }
-        });
+        Sale sale = new Sale(display, new Catalog(
+                new HashMap<String, String>() {
+                    {
+                        put("123", "$12.50");
+                        put("456", "$20.00");
+                    }
+                }));
 
         sale.onBarcode("");
 
